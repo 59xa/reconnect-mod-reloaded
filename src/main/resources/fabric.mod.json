@@ -3,15 +3,15 @@
 	"id": "reconnect-mod-reloaded",
 	"version": "${version}",
 	"name": "Reconnect Mod Reloaded",
-	"description": "A simple mod that supersedes HiWord9's Reconnect Button mod, updated to support 1.21! This mod adds a reconnect button on your in-game menu screen while in a Multiplayer world.",
+	"description": "A simple mod that supersedes HiWord9's Reconnect Button mod, updated to support 1.21!",
 	"authors": [
 		"xa59"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/59xa/reconnect-mod-reloaded/",
+		"sources": "https://github.com/59xa/reconnect-mod-reloaded/"
 	},
-	"license": "MIT",
+	"license": "CC0-1.0",
 	"icon": "assets/reconnect-mod-reloaded/icon.png",
 	"environment": "*",
 	"entrypoints": {
