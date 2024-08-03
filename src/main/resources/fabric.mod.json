@@ -5,13 +5,13 @@
 	"name": "Reconnect Mod Reloaded",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"xa59"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/reconnect-mod-reloaded/icon.png",
 	"environment": "*",
 	"entrypoints": {
