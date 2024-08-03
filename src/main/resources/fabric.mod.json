@@ -3,7 +3,7 @@
 	"id": "reconnect-mod-reloaded",
 	"version": "${version}",
 	"name": "Reconnect Mod Reloaded",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A simple mod that supersedes HiWord9's Reconnect Button mod, updated to support 1.21! This mod adds a reconnect button on your in-game menu screen while in a Multiplayer world.",
 	"authors": [
 		"xa59"
 	],
