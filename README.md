@@ -20,3 +20,8 @@ cd reconnect-mod-reloaded
 ./gradlew build
 cd build/libs
 ```
+
+## Credits
+- HiWord9's implementation (link)[https://github.com/HiWord9/Reconnect-Button-HiWord9-fabric-1.19]
+- Fabric (link)[https://fabricmc.net/]
+- You (for giving this mod a try! 🤍)
