@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "reconnect-mod-reloaded",
 	"version": "${version}",
-	"name": "Reconnect Mod Reloaded",
+	"name": "Reconnect Mod: Reloaded",
 	"description": "A simple mod that supersedes HiWord9's Reconnect Button mod, updated to support 1.21!",
 	"authors": [
 		"xa59"
