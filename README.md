@@ -10,6 +10,13 @@ A simple mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect B
 - There are currently no incompatibilities seen with this mod at the moment.
 - This mod requires the Fabric API to function properly.
 
+## Known Issues
+- Reconnecting on a Realms server causes a `getsockopt` exception.
+
+-> This issue is known, and the reconnect button may not work on Realms for the time being
+
+-> This mod is not yet tested properly in Realms, but will do when there is a chance
+
 ## Building the project
 - JDK 21 (required)
 
