@@ -1,3 +1,4 @@
+![Reconnect Mod: Reloaded Icon](https://github.com/59xa/reconnect-mod-reloaded/blob/master/src/main/resources/assets/reconnect-mod-reloaded/icon.png?raw=true)
 # Reconnect Mod: Reloaded
 A simple mod that supersedes HiWord9's Reconnect Button mod, updated to support 1.21!
 - This mod adds a reconnect button on your in-game menu screen while in a Multiplayer world.
