@@ -4,13 +4,11 @@ import com.xand.reconnectmod.widget.ReconnectButtonWidget;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
-import net.minecraft.client.network.CookieStorage;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.session.Session;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,9 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,36 +59,11 @@ public abstract class RMixin extends Screen {
 						this.client.disconnect();
 
 						LOGGER.info(ANSI_GREEN + "Successfully disconnected player from world, " +
-								ANSI_YELLOW + "now attempting to fetch player and client session data");
-
-						// Fetch current session of the client including player identification
-						Session session = this.client.getSession();
-						String playerUsername = session.getUsername();
-						UUID playerUUID = session.getUuidOrNull();
-						String playerAccessToken = session.getAccessToken();
-						Optional<String> clientXuid = session.getXuid();
-						Optional<String> clientID = session.getClientId();
-						Session.AccountType playerType = session.getAccountType();
-
-						LOGGER.info(ANSI_GREEN + "Successfully retrieved player and client session data");
-
-						// Put session information into a Map interface for CookieStorage to use when re-initialising session
-						Map<Identifier, byte[]> sessionMap = new HashMap<>();
-						sessionMap.put(Identifier.of("reconnectmod:username"), playerUsername.getBytes(StandardCharsets.UTF_8));
-						if (playerUUID != null) {
-							sessionMap.put(Identifier.of("reconnectmod:uuid"), playerUUID.toString().getBytes(StandardCharsets.UTF_8));
-						}
-						sessionMap.put(Identifier.of("reconnectmod:access_token"), playerAccessToken.getBytes(StandardCharsets.UTF_8));
-						clientXuid.ifPresent(xuid -> sessionMap.put(Identifier.of("reconnectmod:xuid"), xuid.getBytes(StandardCharsets.UTF_8)));
-						clientID.ifPresent(id -> sessionMap.put(Identifier.of("reconnectmod:client_id"), id.getBytes(StandardCharsets.UTF_8)));
-						sessionMap.put(Identifier.of("reconnectmod:account_type"), playerType.getName().getBytes(StandardCharsets.UTF_8));
-
-						LOGGER.info(ANSI_GREEN + "Current user and client data successfully added to Map interface, " + ANSI_YELLOW + "now attempting to reconnect user to server");
-						// Initialise CookieStorage with provided Map interface information
-						CookieStorage cookieStorage = new CookieStorage(sessionMap);
+								ANSI_YELLOW + "now attempting to reconnect user to server");
 
 						// Re-connect player to the multiplayer world they previously joined
-						ConnectScreen.connect(null, this.client, serverIp, currentServer, true, cookieStorage);
+						// Note: Transfer Packets will prevent the player from re-joining, avoid using CookieStorage for that purpose by making its value "null"
+						ConnectScreen.connect(null, this.client, serverIp, currentServer, true, null);
 
 						LOGGER.info(ANSI_GREEN + "Successfully reconnected player to current server!");
 					},
