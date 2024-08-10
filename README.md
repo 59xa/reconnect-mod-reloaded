@@ -17,7 +17,7 @@ A simple mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect B
 - Potential mod backporting to old versions may be possible in the near future if there is also demand for it.
 
 ## Will this mod come to CurseForge?
-- There are currently no plans of bringing this mod to Curseforge. For now this mod is available for download on [releases page](https://github.com/59xa/reconnect-mod-reloaded/releases/tag/Releases) or on [https://modrinth.com/mod/reconnect-mod-reloaded](Modrinth)
+- There are currently no plans of bringing this mod to Curseforge. For now this mod is available for download on [releases page](https://github.com/59xa/reconnect-mod-reloaded/releases/tag/Releases) or on [Modrinth](https://modrinth.com/mod/reconnect-mod-reloaded)
 
 ## Is this mod be usable in Realms?
 - Due to how Mojang operates Realms, it is somewhat impossible to pinpoint the server address for any Realm world that you try to join.
