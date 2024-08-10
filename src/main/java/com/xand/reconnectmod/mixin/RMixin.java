@@ -35,9 +35,16 @@ public abstract class RMixin extends Screen {
 
 		// Initialise boolean to determine if the client is in a singleplayer world
 		boolean inSingleplayer = this.client.isInSingleplayer();
+		boolean inRealms = false;
+
+		// Determine if the player is in a Realms world
+		ServerInfo currentServer = this.client.getCurrentServerEntry();
+		if (currentServer != null && currentServer.address != null && currentServer.address.endsWith(".realms.minecraft.net")) {
+			inRealms = true;
+		}
 
 		// Execute if-statement if the user is not in a singleplayer world
-		if (!inSingleplayer) {
+		if (!inSingleplayer && !inRealms) {
 			LOGGER.info(ANSI_YELLOW + "Player not in a singleplayer world, displaying the reconnect button");
 			MutableText text = (MutableText) Text.of("R");
 			this.addDrawableChild(new ReconnectButtonWidget(
@@ -50,7 +57,6 @@ public abstract class RMixin extends Screen {
 						LOGGER.info(ANSI_YELLOW + "Reconnect button pressed, attempting to reconnect player to current server");
 
 						// Fetch current server the player is in
-						ServerInfo currentServer = this.client.getCurrentServerEntry();
 						ServerAddress serverIp = ServerAddress.parse(currentServer.address);
 
 						// Disconnects player from the server they currently are in
