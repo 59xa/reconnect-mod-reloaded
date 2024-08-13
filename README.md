@@ -12,8 +12,8 @@ A simple mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect B
 
 ![Reconnect Mod: Reloaded Example](https://cdn.modrinth.com/data/PjzgKfEE/images/54a7871bc46040b5214402a13cbbd4ab58b64aec.png)
 
-## This mod currently supports Fabric 1.21+
-- There are no current plans of porting this mod to other modloaders like Forge, but will be considered if there is demand.
+## This mod currently supports Fabric and Quilt 1.21+
+- There are no current plans of porting this mod to other modloaders like Forge/Neoforge, but will be considered if there is demand.
 - Potential mod backporting to old versions may be possible in the near future if there is also demand for it.
 
 ## Will this mod come to CurseForge?
@@ -25,7 +25,8 @@ A simple mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect B
 
 ## Dependencies and Incompatibilities
 - There are currently no incompatibilities seen with this mod at the moment.
-- This mod requires the Fabric API to function properly.
+- This mod no longer requires the Fabric API to function properly.
+  -- This in return finally allows support for Quilt modloader clients!
 
 ## Known issues
 - N/A
@@ -44,5 +45,5 @@ cd build/libs
 
 ## Credits
 - HiWord9's implementation ([link](https://github.com/HiWord9/Reconnect-Button-HiWord9-fabric-1.19))
-- Fabric API ([link](https://fabricmc.net/))
+- Fabric ([link](https://fabricmc.net/))
 - You (for giving this mod a try! 🤍)
