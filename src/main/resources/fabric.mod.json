@@ -22,14 +22,21 @@
 			"com.xand.reconnectmod.ReconnectModReloadedDataGenerator"
 		]
 	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.github_releases": "https://github.com/59xa/reconnect-mod-reloaded/releases",
+				"modmenu.modrinth": "https://modrinth.com/mod/reconnect-mod-reloaded"
+			}
+		}
+	},
 	"mixins": [
 		"reconnect-mod-reloaded.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.11",
-		"minecraft": "~1.21.1",
-		"java": ">=21",
-		"fabric-api": "*"
+		"minecraft": ">=1.21",
+		"java": ">=21"
 	},
 	"suggests": {
 		"another-mod": "*"

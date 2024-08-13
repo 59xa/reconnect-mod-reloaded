@@ -6,7 +6,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.session.Session;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
@@ -15,9 +14,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Optional;
-import java.util.UUID;
 
 import static com.xand.reconnectmod.ReconnectModReloaded.*;
 
