@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/59xa/reconnect-mod-reloaded?label=&logo=c&style=for-the-badge&color=A8B9CC&labelColor=455A64)](https://github.com/59xa/reconnect-mod-reloaded/blob/master/LICENSE)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/59xa/reconnect-mod-reloaded/build.yml?style=for-the-badge&label=&logo=Gradle&labelColor=388E3C)](https://github.com/59xa/reconnect-mod-reloaded/actions)
 
-[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.3%20|1.21.2%20|%201.21.1%20|%201.21-green?style=for-the-badge&labelColor=388E3C&color=8BC34A)](https://github.com/59xa/reconnect-mod-reloaded)
+[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.x-green?style=for-the-badge&labelColor=388E3C&color=8BC34A)](https://github.com/59xa/reconnect-mod-reloaded)
 
 A simple mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect Button mod, updated to support 1.21+!
 - This mod adds a reconnect button on your in-game menu screen while in a Multiplayer world.
