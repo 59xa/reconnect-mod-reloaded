@@ -15,7 +15,7 @@
 	"icon": "assets/reconnect-mod-reloaded/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
+		"client": [
 			"com.xand.reconnectmod.ReconnectModReloaded"
 		],
 		"fabric-datagen": [
@@ -34,8 +34,8 @@
 		"reconnect-mod-reloaded.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.15.11",
-		"minecraft": ">=1.21",
+		"fabricloader": ">=0.16.14",
+		"minecraft": ">=1.21 <1.22",
 		"java": ">=21"
 	},
 	"suggests": {
