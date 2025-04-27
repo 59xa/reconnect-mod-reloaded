@@ -38,7 +38,7 @@ public class ReconnectModReloaded implements ClientModInitializer {
 								}
 
 								if (currentServer.isRealm()) {
-									context.getSource().sendFeedback(Text.of("RM-R: Due to Realms API being internal, you can not use the /reconnect command."));
+									context.getSource().sendFeedback(Text.of("RM-R: Due to the Realms API being internal, you can not use the /reconnect command."));
 									return 0;
 								}
 
