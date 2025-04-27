@@ -9,6 +9,7 @@
 
 A simple mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect Button mod, updated to support 1.21+!
 - This mod adds a reconnect button on your in-game menu screen while in a Multiplayer world.
+- **NEW**: You can also reconnect to a server by typing **_/reconnect_** in chat.
 
 ![Reconnect Mod: Reloaded Example](https://cdn.modrinth.com/data/PjzgKfEE/images/54a7871bc46040b5214402a13cbbd4ab58b64aec.png)
 
@@ -20,7 +21,7 @@ A simple mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect B
 - There are currently no plans of bringing this mod to Curseforge. For now this mod is available for download on [releases page](https://github.com/59xa/reconnect-mod-reloaded/releases/tag/Releases) or on [Modrinth](https://modrinth.com/mod/reconnect-mod-reloaded)
 
 ## Is this mod usable in Realms?
-- Due to how Mojang operates Realms, it is somewhat impossible to pinpoint the server address for any Realm world that you try to join.
+- Due to the Realms API being internal, it is impossible to pinpoint the server address for any Realm world that you try to join.
 - For the time being, using the reconnect button on Realms is not possible and has been disabled for use.
 
 ## Dependencies and Incompatibilities
