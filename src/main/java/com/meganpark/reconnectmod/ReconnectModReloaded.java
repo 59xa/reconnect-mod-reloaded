@@ -1,4 +1,4 @@
-package com.xand.reconnectmod;
+package com.meganpark.reconnectmod;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReconnectModReloaded implements ClientModInitializer {
-	public static final String MOD_ID = "reconnectmod";
+	public static final String MOD_ID = "reconnect-mod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final String ANSI_RESET = "\u001B[0m";
@@ -33,8 +33,10 @@ public class ReconnectModReloaded implements ClientModInitializer {
 
 								// Check if the current server is either singleplayer or multiplayer
 								if (currentServer == null) {
-									client.player.sendMessage(Text.of("RM-R: You are currently not connected to a multiplayer server."), false);
-									return 0;
+                                    if (client.player != null) {
+                                        client.player.sendMessage(Text.of("RM-R: You are currently not connected to a multiplayer server."), false);
+                                    }
+                                    return 0;
 								}
 
 								if (currentServer.isRealm()) {
@@ -49,8 +51,10 @@ public class ReconnectModReloaded implements ClientModInitializer {
 								ServerAddress serverAddress = ServerAddress.parse(currentServer.address);
 
 								// Disconnect user
-								client.world.disconnect();
-								client.disconnect();
+                                if (client.world != null) {
+                                    client.disconnect(client.currentScreen, false);
+                                }
+//                                client.disconnect();
 
 								// Initiate reconnect sequence
 								client.execute(() -> {

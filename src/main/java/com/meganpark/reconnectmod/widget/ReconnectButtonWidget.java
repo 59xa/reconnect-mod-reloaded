@@ -1,4 +1,4 @@
-package com.xand.reconnectmod.widget;
+package com.meganpark.reconnectmod.widget;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.MutableText;

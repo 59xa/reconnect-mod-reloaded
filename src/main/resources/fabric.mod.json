@@ -3,7 +3,7 @@
 	"id": "reconnect-mod-reloaded",
 	"version": "${version}",
 	"name": "Reconnect Mod: Reloaded",
-	"description": "A simple mod that supersedes HiWord9's Reconnect Button mod, updated to support 1.21!",
+	"description": "A simple mod that reconnects the user inside a multiplayer world without leaving.",
 	"authors": [
 		"xa59"
 	],
@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"client": [
-			"com.xand.reconnectmod.ReconnectModReloaded"
+			"com.meganpark.reconnectmod.ReconnectModReloaded"
 		],
 		"fabric-datagen": [
-			"com.xand.reconnectmod.ReconnectModReloadedDataGenerator"
+			"com.meganpark.reconnectmod.ReconnectModReloadedDataGenerator"
 		]
 	},
 	"custom": {
@@ -35,7 +35,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
-		"minecraft": ">=1.21 <1.22",
+		"minecraft": ">=1.21.6 <1.22",
 		"java": ">=21"
 	},
 	"suggests": {

@@ -1,6 +1,7 @@
-package com.xand.reconnectmod.mixin;
+package com.meganpark.reconnectmod.mixin;
 
-import com.xand.reconnectmod.widget.ReconnectButtonWidget;
+import com.meganpark.reconnectmod.widget.ReconnectButtonWidget;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
@@ -15,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.xand.reconnectmod.ReconnectModReloaded.*;
+import static com.meganpark.reconnectmod.ReconnectModReloaded.*;
 
 @Mixin(GameMenuScreen.class)
 public abstract class RMixin extends Screen {
@@ -57,8 +58,8 @@ public abstract class RMixin extends Screen {
 
 						// Disconnects player from the server they currently are in
 						button.active = false;
-						this.client.world.disconnect();
-						this.client.disconnect();
+						this.client.disconnect(MinecraftClient.getInstance().currentScreen, false);
+//						this.client.disconnect();
 
 						LOGGER.info(ANSI_GREEN + "Successfully disconnected player from world, " +
 								ANSI_YELLOW + "now attempting to reconnect user to server");
