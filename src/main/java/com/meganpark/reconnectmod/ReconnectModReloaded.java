@@ -52,9 +52,9 @@ public class ReconnectModReloaded implements ClientModInitializer {
 
 								// Disconnect user
                                 if (client.world != null) {
-                                    client.disconnect(client.currentScreen, false);
+                                    client.world.disconnect(Text.of("RM-R: User requested reconnect sequence using /reconnect"));
                                 }
-//                                client.disconnect();
+                                client.disconnect(client.currentScreen, false);
 
 								// Initiate reconnect sequence
 								client.execute(() -> {

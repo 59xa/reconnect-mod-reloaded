@@ -31,7 +31,8 @@ public abstract class RMixin extends Screen {
 	private void addReconnectButton(CallbackInfo ci) {
 
 		// Initialise boolean to determine if the client is in a singleplayer world
-		boolean inSingleplayer = this.client.isInSingleplayer();
+        assert this.client != null;
+        boolean inSingleplayer = this.client.isInSingleplayer();
 		boolean inRealms = false;
 
 		// Determine if the player is in a Realms world
@@ -54,12 +55,14 @@ public abstract class RMixin extends Screen {
 						LOGGER.info(ANSI_YELLOW + "Reconnect button pressed, attempting to reconnect player to current server");
 
 						// Fetch current server the player is in
-						ServerAddress serverIp = ServerAddress.parse(currentServer.address);
+                        assert currentServer != null;
+                        ServerAddress serverIp = ServerAddress.parse(currentServer.address);
 
 						// Disconnects player from the server they currently are in
 						button.active = false;
+                        assert this.client.world != null;
+                        this.client.world.disconnect(Text.of("RM-R: User requested to reconnect through pause menu"));
 						this.client.disconnect(MinecraftClient.getInstance().currentScreen, false);
-//						this.client.disconnect();
 
 						LOGGER.info(ANSI_GREEN + "Successfully disconnected player from world, " +
 								ANSI_YELLOW + "now attempting to reconnect user to server");
