@@ -1,4 +1,4 @@
-package com.meganpark.reconnectmod;
+package com.xa59.reconnectmod;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -21,7 +21,7 @@ public class ReconnectModReloaded implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		LOGGER.info(ANSI_GREEN + "Reconnect Mod Reloaded " + ANSI_YELLOW + "SUCCESSFULLY INITIALIZED!");
+		LOGGER.info(ANSI_GREEN + "Reconnect Mod: " + ANSI_YELLOW + "SUCCESSFULLY INITIALISED.");
 
 		// Register the /reconnect command
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {

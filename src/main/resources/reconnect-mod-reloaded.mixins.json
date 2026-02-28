@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "com.meganpark.reconnectmod.mixin",
+	"package": "com.xa59.reconnectmod.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"RMixin"

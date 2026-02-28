@@ -1,4 +1,4 @@
-package com.meganpark.reconnectmod;
+package com.xa59.reconnectmod;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"client": [
-			"com.meganpark.reconnectmod.ReconnectModReloaded"
+			"com.xa59.reconnectmod.ReconnectModReloaded"
 		],
 		"fabric-datagen": [
-			"com.meganpark.reconnectmod.ReconnectModReloadedDataGenerator"
+			"com.xa59.reconnectmod.ReconnectModReloadedDataGenerator"
 		]
 	},
 	"custom": {
@@ -34,8 +34,8 @@
 		"reconnect-mod-reloaded.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": ">=1.21.7 <1.22",
+		"fabricloader": ">=0.18.4",
+		"minecraft": ">=1.21.11 <1.22",
 		"java": ">=21"
 	},
 	"suggests": {
