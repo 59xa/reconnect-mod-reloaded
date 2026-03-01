@@ -2,12 +2,12 @@ package com.xa59.reconnectmod;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
-import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.multiplayer.resolver.ServerAddress;
+import net.minecraft.network.chat.Component;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,46 +21,47 @@ public class ReconnectModReloaded implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		LOGGER.info(ANSI_GREEN + "Reconnect Mod: " + ANSI_YELLOW + "SUCCESSFULLY INITIALISED.");
+		LOGGER.info(ANSI_GREEN + "reconnect-mod" + ANSI_YELLOW + ": successfully initialised.");
 
 		// Register the /reconnect command
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(
-					ClientCommandManager.literal("reconnect")
+					ClientCommands.literal("reconnect")
 							.executes(context -> {
-								MinecraftClient client = MinecraftClient.getInstance();
-								ServerInfo currentServer = client.getCurrentServerEntry();
+								Minecraft client = Minecraft.getInstance();
+								ServerData currentServer = client.getCurrentServer();
 
 								// Check if the current server is either singleplayer or multiplayer
 								if (currentServer == null) {
                                     if (client.player != null) {
-                                        client.player.sendMessage(Text.of("RM-R: You are currently not connected to a multiplayer server."), false);
+                                        client.player.sendOverlayMessage(Component.nullToEmpty("§cYou are currently not connected to a multiplayer server."));
                                     }
                                     return 0;
 								}
 
 								if (currentServer.isRealm()) {
-									context.getSource().sendFeedback(Text.of("RM-R: Due to the Realms API being internal, you can not use the /reconnect command."));
+									client.player.sendOverlayMessage(Component.nullToEmpty("§cDue to the Realms API being internal, you can not use the /reconnect command."));
 									return 0;
 								}
 
 								// Send feedback to player
-								context.getSource().sendFeedback(Text.of("RM-R: /reconnect command called"));
+								context.getSource().sendFeedback(Component.nullToEmpty("RM-R: /reconnect command called."));
 
 								// Parse current server address
-								ServerAddress serverAddress = ServerAddress.parse(currentServer.address);
+								ServerAddress serverAddress = ServerAddress.parseString(currentServer.ip);
 
 								// Disconnect user
-                                if (client.world != null) {
-                                    client.world.disconnect(Text.of("RM-R: User requested reconnect sequence using /reconnect"));
+                                if (client.level != null) {
+                                    client.level.disconnect(Component.nullToEmpty("RM-R: User requested reconnect sequence using /reconnect."));
                                 }
-                                client.disconnect(client.currentScreen, false);
+                                client.disconnect(client.screen, false);
 
 								// Initiate reconnect sequence
 								client.execute(() -> {
-									ConnectScreen.connect(null, client, serverAddress, currentServer, true, null);
+									ConnectScreen.startConnecting(null, client, serverAddress, currentServer, true, null);
 								});
 
+								context.getSource().sendFeedback(Component.nullToEmpty("RM-R: Successfully reconnected."));
 								return 1;
 							})
 			);
