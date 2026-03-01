@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.xa59.reconnectmod.utils.StatusDisplay;
+
 @Mixin(PauseScreen.class)
 public abstract class RMixin extends Screen {
 
@@ -68,7 +70,18 @@ public abstract class RMixin extends Screen {
 						// Note: Transfer Packets will prevent the player from re-joining, avoid using CookieStorage for that purpose by making its value "null"
 						ConnectScreen.startConnecting(null, this.minecraft, serverIp, currentServer, true, null);
 
+						ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+							if (client.player != null) {
+								client.player.sendOverlayMessage(
+									Component.literal("Successfully reconnected.").withStyle(ChatFormatting.GREEN)
+								);
+							}
+						});
+						
 						LOGGER.info(ANSI_GREEN + "Successfully reconnected player to current server.");
+
+						StatusDisplay.resetOverlay();
+						StatusDisplay.sendOverlayMessageAfterJoin("Successfully reconnected.", ChatFormatting.GREEN);
 				})
 				.bounds(this.width / 2 - 102 + 208, this.height / 4 + 120 + -16, 20, 20)
 				.build()
