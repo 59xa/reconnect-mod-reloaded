@@ -25,10 +25,12 @@ import com.xa59.reconnectmod.utils.StatusDisplay;
 public abstract class RMixin extends Screen {
 
 	public final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
+	
 	protected RMixin(Component title) {
 		super(title);
 	}
+	
+	private boolean reconnectTriggered = false;
 
 	@Inject(at = @At("RETURN"), method = "createPauseMenu")
 	private void addReconnectButton(CallbackInfo ci) {
@@ -62,7 +64,9 @@ public abstract class RMixin extends Screen {
                         assert this.minecraft.level != null;
                         this.minecraft.level.disconnect(Component.nullToEmpty("RM-R: User requested to reconnect through pause menu."));
 						this.minecraft.disconnect(Minecraft.getInstance().screen, false);
-
+						
+						reconnectTriggered = true;
+						
 						LOGGER.info(ANSI_GREEN + "Successfully disconnected player from world, " +
 								ANSI_YELLOW + "now attempting to reconnect user to server.");
 
@@ -71,17 +75,28 @@ public abstract class RMixin extends Screen {
 						ConnectScreen.startConnecting(null, this.minecraft, serverIp, currentServer, true, null);
 
 						ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+							if (!reconnectTriggered) return;
+
+							reconnectTriggered = false;
+
 							if (client.player != null) {
 								client.player.sendOverlayMessage(
 									Component.literal("Successfully reconnected.").withStyle(ChatFormatting.GREEN)
 								);
+
+								StatusDisplay.resetOverlay();
+								StatusDisplay.sendOverlayMessageAfterJoin(
+									"Successfully reconnected.",
+									ChatFormatting.GREEN
+								);
 							}
+						});
+
+						ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+							reconnectTriggered = false;
 						});
 						
 						LOGGER.info(ANSI_GREEN + "Successfully reconnected player to current server.");
-
-						StatusDisplay.resetOverlay();
-						StatusDisplay.sendOverlayMessageAfterJoin("Successfully reconnected.", ChatFormatting.GREEN);
 				})
 				.bounds(this.width / 2 - 102 + 208, this.height / 4 + 120 + -16, 20, 20)
 				.build()

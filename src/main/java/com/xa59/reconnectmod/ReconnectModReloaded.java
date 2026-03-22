@@ -68,9 +68,11 @@ public class ReconnectModReloaded implements ClientModInitializer {
 					if (reconnectTriggered) {
 						StatusDisplay.resetOverlay();
 						StatusDisplay.sendOverlayMessageAfterJoin("Successfully reconnected.", ChatFormatting.GREEN);
+						StatusDisplay.resetOverlay();
+
+						reconnectTriggered = false;
 					}
 					
-					reconnectTriggered = false;
 					return 1;
 				})
 			);
