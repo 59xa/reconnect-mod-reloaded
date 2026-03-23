@@ -1,0 +1,20 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "reconnect"
+
+version = "${version}"
+displayName = "Reconnect"
+
+logoFile = "icon.png"
+
+authors = "xa59"
+
+description = '''
+A simple mod that reconnects the user inside a multiplayer world without leaving.
+'''
+
+[[mixins]]
+config = "reconnect.mixins.json"

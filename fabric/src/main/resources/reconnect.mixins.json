@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "com.xa59.reconnectmod.mixin",
+	"package": "io.xa59.reconnect.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"RMixin"
+		"PauseMenuMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

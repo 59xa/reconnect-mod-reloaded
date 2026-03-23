@@ -1,7 +1,8 @@
-package com.xa59.reconnectmod.mixin;
+package io.xa59.reconnect.mixin;
 
-import static com.xa59.reconnectmod.ReconnectModReloaded.*;
+import static io.xa59.reconnect.ReconnectFabricMod.*;
 
+import io.xa59.reconnect.utils.StatusDisplay;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -15,34 +16,34 @@ import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.xa59.reconnectmod.utils.StatusDisplay;
-
 @Mixin(PauseScreen.class)
-public abstract class RMixin extends Screen {
+public abstract class PauseMenuMixin extends Screen {
 
-	public final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	@Unique
+    public final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	
-	protected RMixin(Component title) {
+	protected PauseMenuMixin(Component title) {
 		super(title);
 	}
 	
-	private boolean reconnectTriggered = false;
+	@Unique
+    private boolean reconnectTriggered = false;
 
 	@Inject(at = @At("RETURN"), method = "createPauseMenu")
 	private void addReconnectButton(CallbackInfo ci) {
 
 		// Initialise boolean to determine if the client is in a singleplayer world
-        assert this.minecraft != null;
         boolean inSingleplayer = this.minecraft.isLocalServer();
 		boolean inRealms = false;
 
 		// Determine if the player is in a Realms world
 		ServerData currentServer = this.minecraft.getCurrentServer();
-		if (currentServer != null && currentServer.ip != null && currentServer.isRealm()) {
+		if (currentServer != null && currentServer.isRealm()) {
 			inRealms = true;
 		}
 
@@ -62,7 +63,9 @@ public abstract class RMixin extends Screen {
 						// Disconnects player from the server they currently are in
 						button.active = false;
                         assert this.minecraft.level != null;
-                        this.minecraft.level.disconnect(Component.nullToEmpty("RM-R: User requested to reconnect through pause menu."));
+                        this.minecraft.level.disconnect(Component.nullToEmpty("[Reconnect]: User requested to reconnect through pause menu."));
+
+						assert Minecraft.getInstance().screen != null;
 						this.minecraft.disconnect(Minecraft.getInstance().screen, false);
 						
 						reconnectTriggered = true;
