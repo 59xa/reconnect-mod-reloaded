@@ -1,5 +1,7 @@
 package io.xa59.reconnect;
 
+import io.xa59.reconnect.utils.FabricStatusDisplay;
+import io.xa59.reconnect.utils.StatusDisplay;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
@@ -15,17 +17,17 @@ public class ReconnectFabricMod implements ClientModInitializer {
 	public static final String ANSI_GREEN = "\u001B[32m";
 	public static final String ANSI_YELLOW = "\u001B[33m";
 
-	private boolean reconnectTriggered = false;
-
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info(ANSI_GREEN + "Reconnect" + ANSI_YELLOW + ": successfully initialised on Fabric." + ANSI_RESET);
 
-		// Register the /reconnect command
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		StatusDisplay.setImplementation(new FabricStatusDisplay());
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			// Register the /reconnect command
 			dispatcher.register(
 					ClientCommands.literal("reconnect")
-							.executes(ctx -> ReconnectHandler.reconnect(Minecraft.getInstance()))
+							.executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
 			);
 		});
 	}

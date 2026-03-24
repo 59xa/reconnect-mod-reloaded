@@ -1,19 +1,23 @@
 package io.xa59.reconnect.utils;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class StatusDisplay {
+    private static IStatusDisplay impl;
+
+    public static void setImplementation(IStatusDisplay implementation) {
+        impl = implementation;
+    }
+
     public static void sendOverlayMessageAfterJoin(String message, ChatFormatting formatting) {
-        // Does not work
-        Minecraft instance = Minecraft.getInstance();
-        if (instance.player != null) {
-            instance.player.sendOverlayMessage(Component.literal(message).withStyle(formatting));
+        if (impl != null) {
+            impl.sendOverlayMessageAfterJoin(message, formatting);
         }
     }
 
     public static void resetOverlay() {
-
+        if (impl != null) {
+            impl.resetOverlay();
+        }
     }
 }

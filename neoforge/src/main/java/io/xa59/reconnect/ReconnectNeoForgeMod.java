@@ -1,5 +1,7 @@
 package io.xa59.reconnect;
 
+import io.xa59.reconnect.utils.NeoForgeStatusDisplay;
+import io.xa59.reconnect.utils.StatusDisplay;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.lifecycle.ClientStartedEvent;
 import org.slf4j.Logger;
@@ -23,6 +25,8 @@ public class ReconnectNeoForgeMod {
     @SubscribeEvent
     public void onClientStarting(ClientStartedEvent event) {
         LOGGER.info(ANSI_GREEN + "Reconnect" + ANSI_YELLOW + ": successfully initialised on NeoForge." + ANSI_RESET);
+
+        StatusDisplay.setImplementation(new NeoForgeStatusDisplay());
     }
 
     public ReconnectNeoForgeMod() {
@@ -31,9 +35,10 @@ public class ReconnectNeoForgeMod {
     }
 
     private void registerCommands(RegisterClientCommandsEvent event) {
+        // Register the /reconnect command
         event.getDispatcher().register(
                 Commands.literal("reconnect")
-                        .executes(ctx -> ReconnectHandler.reconnect(Minecraft.getInstance()))
+                        .executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
         );
     }
 }
