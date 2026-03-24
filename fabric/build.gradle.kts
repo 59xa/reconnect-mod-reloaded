@@ -46,6 +46,10 @@ tasks.named<Jar>("jar") {
     from(project(":common").sourceSets["main"].output)
 }
 
+tasks.named<ProcessResources>("processResources") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 tasks {
     processResources {
         from(project(":common").sourceSets["main"].resources) {
