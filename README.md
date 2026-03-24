@@ -1,5 +1,5 @@
-![Reconnect Mod: Reloaded Icon](common/src/main/resources/icon.png)
-# Reconnect Mod: Reloaded
+![Reconnect Icon](common/src/main/resources/icon.png)
+# Reconnect
 
 [![Modrinth](https://img.shields.io/modrinth/dt/PjzgKfEE?label=&logo=Modrinth&labelColor=white&color=00AF5C&style=for-the-badge)](https://modrinth.com/mod/reconnect-mod-reloaded)
 [![License](https://img.shields.io/github/license/59xa/reconnect-mod-reloaded?label=&logo=c&style=for-the-badge&color=A8B9CC&labelColor=455A64)](https://github.com/59xa/reconnect-mod-reloaded/blob/master/LICENSE)
@@ -11,7 +11,7 @@ A mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect Button m
 - This mod adds a reconnect button on your in-game menu screen while in a Multiplayer world.
 - **NEW**: You can also reconnect to a server by typing **`/reconnect`** in chat.
 
-![Reconnect Mod: Reloaded Example](https://cdn.modrinth.com/data/PjzgKfEE/images/54a7871bc46040b5214402a13cbbd4ab58b64aec.png)
+![Reconnect Example](https://cdn.modrinth.com/data/PjzgKfEE/images/54a7871bc46040b5214402a13cbbd4ab58b64aec.png)
 
 ## This mod currently supports Fabric and NeoForge on versions `1.21+`, and `26.1`
 - A port for Forge may occur in the near future. No further plans for Quilt modloaders for the time being.
