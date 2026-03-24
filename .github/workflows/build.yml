@@ -29,11 +29,14 @@ jobs:
         run: chmod +x ./gradlew
       - name: build
         run: ./gradlew build
+      - name: Get mod version
+        id: version
+        run: echo "VERSION=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
       - name: Capture build artefacts
         if: ${{ matrix.java == '25' }} # Only upload artefacts built from latest java
         uses: actions/upload-artifact@v6
         with:
-          name: Artefacts
+          name: reconnect-${{ steps.version.outputs.VERSION || 'unknown-version' }}
           path: |
             common/build/libs/*.jar
             fabric/build/libs/*.jar
