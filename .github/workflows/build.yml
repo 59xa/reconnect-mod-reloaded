@@ -27,7 +27,7 @@ jobs:
           distribution: 'temurin'
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: build
+      - name: Build
         run: ./gradlew build
       - name: Get mod version
         id: version
