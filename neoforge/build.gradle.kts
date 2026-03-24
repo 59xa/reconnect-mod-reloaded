@@ -56,6 +56,9 @@ val configurationMod: Configuration = configurations.create("main") {
 }
 
 sourceSets["main"].resources.srcDirs += project(":common").sourceSets["main"].resources.srcDirs
+sourceSets["main"].resources.srcDirs(
+    project(":common").sourceSets["main"].resources.srcDirs
+)
 
 sourceSets {
     create("mod") {
