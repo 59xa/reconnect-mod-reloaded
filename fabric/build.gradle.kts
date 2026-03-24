@@ -45,3 +45,11 @@ dependencies {
 tasks.named<Jar>("jar") {
     from(project(":common").sourceSets["main"].output)
 }
+
+tasks {
+    processResources {
+        from(project(":common").sourceSets["main"].resources) {
+            include("reconnect.mixins.json")
+        }
+    }
+}

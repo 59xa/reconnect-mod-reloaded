@@ -96,6 +96,10 @@ tasks.named<Jar>("jar") {
     dependsOn(project(":common").tasks.named("processResources"))
 }
 
+tasks.named<ProcessResources>("processResources") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 tasks {
     jar {
         destinationDirectory.set(file(rootProject.layout.buildDirectory).resolve("main"))
@@ -114,6 +118,12 @@ tasks {
 
         filesMatching(listOf("META-INF/neoforge.mods.toml")) {
             expand(mapOf("version" to BuildConf.getVersionString(rootProject)))
+        }
+    }
+
+    processResources {
+        from(project(":common").sourceSets["main"].resources) {
+            include("reconnect.mixins.json")
         }
     }
 }
