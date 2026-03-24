@@ -47,13 +47,7 @@ tasks.named<Jar>("jar") {
 }
 
 tasks.named<ProcessResources>("processResources") {
+    from(project(":common").sourceSets["main"].resources.srcDirs)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
 
-tasks {
-    processResources {
-        from(project(":common").sourceSets["main"].resources) {
-            include("reconnect.mixins.json")
-        }
-    }
 }
