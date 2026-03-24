@@ -44,10 +44,10 @@ dependencies {
 
 tasks.named<Jar>("jar") {
     from(project(":common").sourceSets["main"].output)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.named<ProcessResources>("processResources") {
     from(project(":common").sourceSets["main"].resources.srcDirs)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
 }
