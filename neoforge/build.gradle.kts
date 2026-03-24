@@ -92,6 +92,10 @@ tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+tasks.named<Jar>("jar") {
+    dependsOn(project(":common").tasks.named("processResources"))
+}
+
 tasks {
     jar {
         destinationDirectory.set(file(rootProject.layout.buildDirectory).resolve("main"))
