@@ -21,7 +21,7 @@ A mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect Button m
 - There are currently no plans of bringing this mod to Curseforge. For now this mod is available for download on [releases page](https://github.com/59xa/reconnect-mod-reloaded/releases/tag/Releases) or on [Modrinth](https://modrinth.com/mod/reconnect-mod-reloaded)
 
 ## Is this mod usable in Realms?
-- Due to the Realms API being internal, it is impossible to pinpoint the server address for any Realm world that you try to join.
+- Realms implementation is in the works, stay tuned.
 - For the time being, using the reconnect button on Realms is not possible and has been disabled for use.
 
 ## Dependencies and Incompatibilities
