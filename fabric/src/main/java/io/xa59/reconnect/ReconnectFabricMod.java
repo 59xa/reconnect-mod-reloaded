@@ -1,7 +1,5 @@
 package io.xa59.reconnect;
 
-import io.xa59.reconnect.ReconnectCommands;
-
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
@@ -21,13 +19,13 @@ public class ReconnectFabricMod implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		LOGGER.info(ANSI_GREEN + "reconnect-mod" + ANSI_YELLOW + ": successfully initialised.");
+		LOGGER.info(ANSI_GREEN + "Reconnect" + ANSI_YELLOW + ": successfully initialised on Fabric." + ANSI_RESET);
 
 		// Register the /reconnect command
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(
 					ClientCommands.literal("reconnect")
-							.executes(ctx -> ReconnectCommands.reconnect(Minecraft.getInstance()))
+							.executes(ctx -> ReconnectHandler.reconnect(Minecraft.getInstance()))
 			);
 		});
 	}

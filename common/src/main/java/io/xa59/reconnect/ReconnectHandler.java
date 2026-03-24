@@ -8,14 +8,16 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;
 
-public class ReconnectCommands {
+public class ReconnectHandler {
+    private static boolean reconnectTriggered = false;
+
     public static int reconnect(Minecraft instance) {
         Minecraft client = Minecraft.getInstance();
         ServerData currentServer = client.getCurrentServer();
 
         if (currentServer == null) {
             if (client.player != null) {
-                client.player.sendSystemMessage(
+                client.player.sendOverlayMessage(
                         Component.literal("You are currently not connected to a multiplayer server.")
                                 .withStyle(ChatFormatting.RED)
                 );
@@ -27,7 +29,7 @@ public class ReconnectCommands {
         assert currentServer != null;
         if (currentServer.isRealm()) {
             assert client.player != null;
-            client.player.sendSystemMessage(
+            client.player.sendOverlayMessage(
                     Component.literal("Reconnecting in Realms is not supported.")
                             .withStyle(ChatFormatting.RED)
             );
@@ -53,5 +55,13 @@ public class ReconnectCommands {
         StatusDisplay.resetOverlay();
 
         return 1;
+    }
+
+    public static boolean wasTriggered() {
+        return reconnectTriggered;
+    }
+
+    public static void reset() {
+        reconnectTriggered = false;
     }
 }
