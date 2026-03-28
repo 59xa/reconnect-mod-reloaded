@@ -6,7 +6,7 @@ object BuildConf {
     const val FABRIC_API_VERSION: String = "0.144.0+26.1"
     const val NEOFORGE_VERSION: String = "26.1.0.1-beta"
 
-    var MOD_VERSION: String = "1.3"
+    var MOD_VERSION: String = "1.4"
 
     fun getVersionString(project: Project): String {
         val builder = StringBuilder()
