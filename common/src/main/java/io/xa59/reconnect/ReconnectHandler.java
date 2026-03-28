@@ -1,9 +1,12 @@
 package io.xa59.reconnect;
 
+import com.mojang.realmsclient.RealmsMainScreen;
+import io.xa59.reconnect.utils.RealmsStateManager;
 import io.xa59.reconnect.utils.StatusDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;
@@ -21,40 +24,54 @@ public class ReconnectHandler {
                         Component.literal("You are currently not connected to a multiplayer server.")
                                 .withStyle(ChatFormatting.RED)
                 );
-
-                return 0;
             }
+            return 0;
         }
-
-        assert currentServer != null;
-        if (currentServer.isRealm()) {
-            assert client.player != null;
-            client.player.sendOverlayMessage(
-                    Component.literal("Reconnecting in Realms is not supported.")
-                            .withStyle(ChatFormatting.RED)
-            );
-        }
-
-        // Parse current server address
-        ServerAddress serverAddress = ServerAddress.parseString(currentServer.ip);
 
         // Disconnect user
         if (client.level != null) {
             client.level.disconnect(Component.literal("[Reconnect]: User requested reconnect sequence using /reconnect."));
         }
 
-        assert client.screen != null;
-        client.disconnect(client.screen, false);
+        Screen currentScreen = client.screen;
+        assert currentScreen != null;
+        client.disconnect(currentScreen, false);
+
+        // If on Realms, handle connection through here instead
+        if (currentServer.isRealm()) {
+            if (RealmsStateManager.currentRealm != null) {
+                client.execute(() -> {
+                    RealmsMainScreen.play(RealmsStateManager.currentRealm, currentScreen);
+                });
+
+                sendSuccessMessage();
+                return 1;
+            } else {
+                if (client.player != null) {
+                    client.player.sendOverlayMessage(
+                            Component.literal("Failed to fetch Realm data for reconnect.")
+                                    .withStyle(ChatFormatting.RED)
+                    );
+                }
+                return 0;
+            }
+        }
+
+        // Parse current server address
+        ServerAddress serverAddress = ServerAddress.parseString(currentServer.ip);
 
         client.execute(() -> {
-            ConnectScreen.startConnecting(null, client, serverAddress, currentServer, true, null);
+            ConnectScreen.startConnecting(currentScreen, client, serverAddress, currentServer, true, null);
         });
 
+        sendSuccessMessage();
+        return 1;
+    }
+
+    private static void sendSuccessMessage() {
         StatusDisplay.resetOverlay();
         StatusDisplay.sendOverlayMessageAfterJoin("Successfully reconnected.", ChatFormatting.GREEN);
         StatusDisplay.resetOverlay();
-
-        return 1;
     }
 
     public static boolean wasTriggered() {

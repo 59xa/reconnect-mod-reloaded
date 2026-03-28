@@ -3,9 +3,13 @@
 	"package": "io.xa59.reconnect.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"PauseMenuMixin"
+
 	],
 	"injectors": {
 		"defaultRequire": 1
-	}
+	},
+	"client": [
+		"PauseMenuMixin",
+		"RealmsMainScreenMixin"
+	]
 }

@@ -27,10 +27,9 @@ public abstract class PauseMenuMixin extends Screen {
         boolean inSingleplayer = this.minecraft.isLocalServer();
 
         ServerData currentServer = minecraft.getCurrentServer();
-        boolean inRealms = currentServer != null && currentServer.isRealm();
 
-        // Only show in multiplayer (not in Singleplayer or Realms)
-        if (inSingleplayer || inRealms || currentServer == null) return;
+        // Only show in multiplayer (not in Singleplayer)
+        if (inSingleplayer || currentServer == null) return;
 
         Button disconnectButton = null;
         for (var widget : this.children()) {
