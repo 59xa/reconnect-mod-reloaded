@@ -31,7 +31,7 @@ A mod that supersedes [HiWord9](https://github.com/HiWord9)'s Reconnect Button m
 - N/A
 
 ## Building the project
-- `JDK 25` (required)
+- `Java 25` (required)
 
 To get the files from this repository:
 ```bash
