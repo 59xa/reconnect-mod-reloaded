@@ -33,6 +33,8 @@ public class ReconnectHandler {
                     Component.literal("Reconnecting in Realms is not supported.")
                             .withStyle(ChatFormatting.RED)
             );
+
+            return 0;
         }
 
         // Parse current server address
