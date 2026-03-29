@@ -61,7 +61,14 @@ public class ReconnectNeoForgeMod {
                                             String cmd = StringArgumentType.getString(ctx, "command");
                                             cmd = ArgumentUtils.cleanupCommandInput(cmd);
 
-                                            if (cmd == null || cmd.isEmpty()) {
+                                            String[] parts = cmd.trim().split("\\s+");
+
+                                            if (parts.length > 0 && parts[0].equalsIgnoreCase("reconnect")) {
+                                                ctx.getSource().sendFailure(Component.literal("<59xa> bro, don't even try recursing /reconnect lmfao"));
+                                                return 0;
+                                            }
+
+                                            if (cmd.isEmpty()) {
                                                 ctx.getSource().sendFailure(Component.literal("[Reconnect] Command cannot be empty."));
                                                 return 0;
                                             }
