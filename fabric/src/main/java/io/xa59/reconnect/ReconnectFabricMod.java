@@ -1,10 +1,12 @@
 package io.xa59.reconnect;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import io.xa59.reconnect.utils.FabricStatusDisplay;
 import io.xa59.reconnect.utils.StatusDisplay;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.network.chat.Component;
@@ -40,19 +42,7 @@ public class ReconnectFabricMod implements ClientModInitializer {
                                             String cmd = StringArgumentType.getString(ctx, "command");
                                             cmd = ArgumentUtils.cleanupCommandInput(cmd);
 
-                                            String[] parts = cmd.trim().split("\\s+");
-
-                                            if (parts.length > 0 && parts[0].equalsIgnoreCase("reconnect")) {
-                                                ctx.getSource().sendError(Component.literal("<59xa> bro, don't even try recursing /reconnect lmfao"));
-                                                return 0;
-                                            }
-
-                                            if (cmd.isEmpty()) {
-                                                ctx.getSource().sendError(Component.literal("[Reconnect] Command cannot be empty."));
-                                                return 0;
-                                            }
-
-                                            ArgumentUtils.setPostCommand(cmd);
+                                            if (sanitiseCommandPayload(ctx, cmd)) return 0;
 
                                             // Ensure delay is reset when not provided
                                             ArgumentUtils.setDelay("0s");
@@ -71,12 +61,7 @@ public class ReconnectFabricMod implements ClientModInitializer {
 
                                                             String time = StringArgumentType.getString(ctx, "time");
 
-                                                            if (cmd == null || cmd.isEmpty()) {
-                                                                ctx.getSource().sendError(Component.literal("[Reconnect] Command cannot be empty."));
-                                                                return 0;
-                                                            }
-
-                                                            ArgumentUtils.setPostCommand(cmd);
+                                                            if (sanitiseCommandPayload(ctx, cmd)) return 0;
                                                             ArgumentUtils.setDelay(time);
 
                                                             return ReconnectHandler.reconnect();
@@ -89,5 +74,22 @@ public class ReconnectFabricMod implements ClientModInitializer {
 
 		ClientPlayConnectionEvents.JOIN.register((_, _, client) -> ReconnectHandler.handlePostJoin(client));
 	}
+
+    private boolean sanitiseCommandPayload(CommandContext<FabricClientCommandSource> ctx, String cmd) {
+        if (cmd.isEmpty()) {
+            ctx.getSource().sendError(Component.literal("[Reconnect] Command cannot be empty."));
+            return true;
+        }
+
+        String[] parts = cmd.trim().split("\\s+");
+
+        if (parts.length > 0 && parts[0].equalsIgnoreCase("reconnect")) {
+            ctx.getSource().sendError(Component.literal("<59xa> bro, don't even try recursing /reconnect lmfao"));
+            return true;
+        }
+
+        ArgumentUtils.setPostCommand(cmd);
+        return false;
+    }
 
 }
