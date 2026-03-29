@@ -50,6 +50,8 @@ public class ReconnectHandler {
                     RealmsMainScreen.play(RealmsStateManager.currentRealm, currentScreen);
                 });
 
+                if (ArgumentUtils.getPostCommand() == null) sendSuccessMessage();
+
                 return 1;
             } else {
                 isReconnecting = false; // Abort reconnect state if fetching fails
@@ -69,6 +71,8 @@ public class ReconnectHandler {
         client.execute(() -> {
             ConnectScreen.startConnecting(currentScreen, client, serverAddress, currentServer, true, null);
         });
+
+        if (ArgumentUtils.getPostCommand() == null) sendSuccessMessage();
 
         return 1;
     }
