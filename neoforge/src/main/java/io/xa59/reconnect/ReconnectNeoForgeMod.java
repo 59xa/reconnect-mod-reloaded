@@ -52,6 +52,8 @@ public class ReconnectNeoForgeMod {
         // Register the /reconnect command
         event.getDispatcher().register(
                 Commands.literal("reconnect")
+                        .executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
+
                         .then(Commands.literal("execute")
 
                                 // "/reconnect execute <command>"

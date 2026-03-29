@@ -13,6 +13,10 @@ import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;
 
 public class ReconnectHandler {
+
+    // Flag to track if a reconnect is actually in progress and prevent multiple event fires
+    private static boolean isReconnecting = false;
+
     public static int reconnect(Minecraft instance) {
         Minecraft client = Minecraft.getInstance();
         ServerData currentServer = client.getCurrentServer();
@@ -26,6 +30,9 @@ public class ReconnectHandler {
             }
             return 0;
         }
+
+        // Mark that an intentional reconnect sequence has started
+        isReconnecting = true;
 
         // Disconnect user
         if (client.level != null) {
@@ -43,9 +50,9 @@ public class ReconnectHandler {
                     RealmsMainScreen.play(RealmsStateManager.currentRealm, currentScreen);
                 });
 
-                sendSuccessMessage();
                 return 1;
             } else {
+                isReconnecting = false; // Abort reconnect state if fetching fails
                 if (client.player != null) {
                     client.player.sendOverlayMessage(
                             Component.literal("Failed to fetch Realm data for reconnect.")
@@ -63,8 +70,6 @@ public class ReconnectHandler {
             ConnectScreen.startConnecting(currentScreen, client, serverAddress, currentServer, true, null);
         });
 
-        sendSuccessMessage();
-
         return 1;
     }
 
@@ -75,22 +80,49 @@ public class ReconnectHandler {
     }
 
     public static void handlePostJoin(Minecraft client) {
+        // Abort if not triggered by command, or if it already ran
+        if (!isReconnecting) {
+            return;
+        }
+
+        // Consume the intent so this logic only executes exactly once
+        isReconnecting = false;
+
         String commandToRun = ArgumentUtils.getPostCommand();
         int delayTime = ArgumentUtils.getDelaySeconds();
-
-        if (commandToRun == null) return;
 
         // Clear shared state
         ArgumentUtils.clear();
 
+        assert client.player != null;
+
+        // If null or empty
+        if (commandToRun == null || commandToRun.trim().isEmpty()) {
+            sendSuccessMessage();
+            return;
+        }
+
+        // If command exists with delay, display intent overlay message
+        if (delayTime != 0) {
+            client.player.sendOverlayMessage(
+                    Component.literal("Successfully reconnected. Running command payload after " + delayTime + " seconds.")
+                            .withStyle(ChatFormatting.YELLOW)
+            );
+        }
+
         new Thread(() -> {
             try {
-                Thread.sleep(delayTime * 1000L); // sleep() expects milliseconds, convert value
+                Thread.sleep(delayTime * 1000L);
             } catch (InterruptedException ignored) {}
 
             client.execute(() -> {
                 if (client.player != null) {
                     client.player.connection.sendCommand(commandToRun);
+
+                    client.player.sendOverlayMessage(
+                            Component.literal("Command execution complete.")
+                                    .withStyle(ChatFormatting.GREEN)
+                    );
                 }
             });
         }).start();

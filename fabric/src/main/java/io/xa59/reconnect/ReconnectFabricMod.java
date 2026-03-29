@@ -31,6 +31,8 @@ public class ReconnectFabricMod implements ClientModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			dispatcher.register(
 					ClientCommands.literal("reconnect")
+							.executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
+
 							.then(ClientCommands.literal("execute")
 
 									// "/reconnect execute <command>"
