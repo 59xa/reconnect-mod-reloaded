@@ -1,9 +1,11 @@
 package io.xa59.reconnect;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import io.xa59.reconnect.utils.ArgumentUtils;
 import io.xa59.reconnect.utils.NeoForgeStatusDisplay;
 import io.xa59.reconnect.utils.StatusDisplay;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -61,19 +63,7 @@ public class ReconnectNeoForgeMod {
                                             String cmd = StringArgumentType.getString(ctx, "command");
                                             cmd = ArgumentUtils.cleanupCommandInput(cmd);
 
-                                            String[] parts = cmd.trim().split("\\s+");
-
-                                            if (parts.length > 0 && parts[0].equalsIgnoreCase("reconnect")) {
-                                                ctx.getSource().sendFailure(Component.literal("<59xa> bro, don't even try recursing /reconnect lmfao"));
-                                                return 0;
-                                            }
-
-                                            if (cmd.isEmpty()) {
-                                                ctx.getSource().sendFailure(Component.literal("[Reconnect] Command cannot be empty."));
-                                                return 0;
-                                            }
-
-                                            ArgumentUtils.setPostCommand(cmd);
+                                            if (sanitiseCommandPayload(ctx, cmd)) return 0;
 
                                             // Ensure delay is reset when not provided
                                             ArgumentUtils.setDelay("0s");
@@ -92,12 +82,7 @@ public class ReconnectNeoForgeMod {
 
                                                             String time = StringArgumentType.getString(ctx, "time");
 
-                                                            if (cmd == null || cmd.isEmpty()) {
-                                                                ctx.getSource().sendFailure(Component.literal("[Reconnect] Command cannot be empty."));
-                                                                return 0;
-                                                            }
-
-                                                            ArgumentUtils.setPostCommand(cmd);
+                                                            if (sanitiseCommandPayload(ctx, cmd)) return 0;
                                                             ArgumentUtils.setDelay(time);
 
                                                             return ReconnectHandler.reconnect();
@@ -107,6 +92,23 @@ public class ReconnectNeoForgeMod {
                                 )
                         )
         );
+    }
+
+    private boolean sanitiseCommandPayload(CommandContext<CommandSourceStack> ctx, String cmd) {
+        if (cmd.isEmpty()) {
+            ctx.getSource().sendFailure(Component.literal("[Reconnect] Command cannot be empty."));
+            return true;
+        }
+
+        String[] parts = cmd.trim().split("\\s+");
+
+        if (parts.length > 0 && parts[0].equalsIgnoreCase("reconnect")) {
+            ctx.getSource().sendFailure(Component.literal("<59xa> bro, don't even try recursing /reconnect lmfao"));
+            return true;
+        }
+
+        ArgumentUtils.setPostCommand(cmd);
+        return false;
     }
 
 }
