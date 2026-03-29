@@ -112,7 +112,7 @@ public class ReconnectHandler {
 
         new Thread(() -> {
             try {
-                Thread.sleep(delayTime * 1000L);
+                Thread.sleep(Math.max(200, delayTime * 1000L));
             } catch (InterruptedException ignored) {}
 
             client.execute(() -> {
