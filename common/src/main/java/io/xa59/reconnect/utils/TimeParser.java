@@ -1,6 +1,7 @@
 package io.xa59.reconnect.utils;
 
 public class TimeParser {
+
     public static int parseTime(String input) {
         input = input.toLowerCase().trim();
 
@@ -22,4 +23,5 @@ public class TimeParser {
             return 0;
         }
     }
+
 }

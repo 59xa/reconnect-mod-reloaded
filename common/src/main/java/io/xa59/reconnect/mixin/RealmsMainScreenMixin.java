@@ -11,8 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RealmsMainScreen.class)
 public class RealmsMainScreenMixin {
-    @Inject(method = "play(Lcom/mojang/realmsclient/dto/RealmsServer;Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"), remap = true)
+
+    @Inject(method = "play(Lcom/mojang/realmsclient/dto/RealmsServer;Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
     private static void captureRealmData(RealmsServer server, Screen lastScreen, CallbackInfo ci) {
         RealmsStateManager.currentRealm = server;
     }
+
 }

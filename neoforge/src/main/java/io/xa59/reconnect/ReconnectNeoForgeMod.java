@@ -20,6 +20,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(value = "reconnect", dist = Dist.CLIENT)
 public class ReconnectNeoForgeMod {
+
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final String ANSI_RESET = "\u001B[0m";
@@ -37,9 +38,7 @@ public class ReconnectNeoForgeMod {
     public void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         Minecraft client = Minecraft.getInstance();
 
-        client.execute(() -> {
-            ReconnectHandler.handlePostJoin(client);
-        });
+        client.execute(() -> ReconnectHandler.handlePostJoin(client));
     }
 
     public ReconnectNeoForgeMod() {
@@ -52,7 +51,7 @@ public class ReconnectNeoForgeMod {
         // Register the /reconnect command
         event.getDispatcher().register(
                 Commands.literal("reconnect")
-                        .executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
+                        .executes(_ -> ReconnectHandler.reconnect())
 
                         .then(Commands.literal("execute")
 
@@ -72,7 +71,7 @@ public class ReconnectNeoForgeMod {
                                             // Ensure delay is reset when not provided
                                             ArgumentUtils.setDelay("0s");
 
-                                            return ReconnectHandler.reconnect(Minecraft.getInstance());
+                                            return ReconnectHandler.reconnect();
                                         })
                                 )
 
@@ -94,7 +93,7 @@ public class ReconnectNeoForgeMod {
                                                             ArgumentUtils.setPostCommand(cmd);
                                                             ArgumentUtils.setDelay(time);
 
-                                                            return ReconnectHandler.reconnect(Minecraft.getInstance());
+                                                            return ReconnectHandler.reconnect();
                                                         })
                                                 )
                                         )
@@ -102,4 +101,5 @@ public class ReconnectNeoForgeMod {
                         )
         );
     }
+
 }

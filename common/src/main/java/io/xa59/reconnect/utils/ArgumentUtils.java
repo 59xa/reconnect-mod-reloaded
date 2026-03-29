@@ -1,6 +1,7 @@
 package io.xa59.reconnect.utils;
 
 public class ArgumentUtils {
+
     private static String postCommand;
     private static int delaySeconds;
 
@@ -39,4 +40,5 @@ public class ArgumentUtils {
         postCommand = null;
         delaySeconds = 0;
     }
+
 }

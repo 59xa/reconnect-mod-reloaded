@@ -17,7 +17,7 @@ public class ReconnectHandler {
     // Flag to track if a reconnect is actually in progress and prevent multiple event fires
     private static boolean isReconnecting = false;
 
-    public static int reconnect(Minecraft instance) {
+    public static int reconnect() {
         Minecraft client = Minecraft.getInstance();
         ServerData currentServer = client.getCurrentServer();
 
@@ -46,9 +46,7 @@ public class ReconnectHandler {
         // If on Realms, handle connection through here instead
         if (currentServer.isRealm()) {
             if (RealmsStateManager.currentRealm != null) {
-                client.execute(() -> {
-                    RealmsMainScreen.play(RealmsStateManager.currentRealm, currentScreen);
-                });
+                client.execute(() -> RealmsMainScreen.play(RealmsStateManager.currentRealm, currentScreen));
 
                 if (ArgumentUtils.getPostCommand() == null) sendSuccessMessage();
 
@@ -68,9 +66,7 @@ public class ReconnectHandler {
         // Parse current server address
         ServerAddress serverAddress = ServerAddress.parseString(currentServer.ip);
 
-        client.execute(() -> {
-            ConnectScreen.startConnecting(currentScreen, client, serverAddress, currentServer, true, null);
-        });
+        client.execute(() -> ConnectScreen.startConnecting(currentScreen, client, serverAddress, currentServer, true, null));
 
         if (ArgumentUtils.getPostCommand() == null) sendSuccessMessage();
 
@@ -131,4 +127,5 @@ public class ReconnectHandler {
             });
         }).start();
     }
+
 }

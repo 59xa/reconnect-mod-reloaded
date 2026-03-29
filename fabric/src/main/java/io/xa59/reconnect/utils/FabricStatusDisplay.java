@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 public class FabricStatusDisplay implements IStatusDisplay {
+
     private boolean showOverlay = false;
 
     @Override
@@ -23,4 +24,5 @@ public class FabricStatusDisplay implements IStatusDisplay {
     public void resetOverlay() {
         showOverlay = false;
     }
+
 }
