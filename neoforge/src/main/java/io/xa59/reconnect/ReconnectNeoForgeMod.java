@@ -1,8 +1,12 @@
 package io.xa59.reconnect;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
+import io.xa59.reconnect.utils.ArgumentUtils;
 import io.xa59.reconnect.utils.NeoForgeStatusDisplay;
 import io.xa59.reconnect.utils.StatusDisplay;
+import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.lifecycle.ClientStartedEvent;
 import org.slf4j.Logger;
 
@@ -29,16 +33,71 @@ public class ReconnectNeoForgeMod {
         StatusDisplay.setImplementation(new NeoForgeStatusDisplay());
     }
 
+    @SubscribeEvent
+    public void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+        Minecraft client = Minecraft.getInstance();
+
+        client.execute(() -> {
+            ReconnectHandler.handlePostJoin(client);
+        });
+    }
+
     public ReconnectNeoForgeMod() {
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
+        NeoForge.EVENT_BUS.addListener(this::onJoin);
     }
 
     private void registerCommands(RegisterClientCommandsEvent event) {
         // Register the /reconnect command
         event.getDispatcher().register(
                 Commands.literal("reconnect")
-                        .executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
+                        .then(Commands.literal("execute")
+
+                                // "/reconnect execute <command>"
+                                .then(Commands.argument("command", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            String cmd = StringArgumentType.getString(ctx, "command");
+                                            cmd = ArgumentUtils.cleanupCommandInput(cmd);
+
+                                            if (cmd == null || cmd.isEmpty()) {
+                                                ctx.getSource().sendFailure(Component.literal("[Reconnect] Command cannot be empty."));
+                                                return 0;
+                                            }
+
+                                            ArgumentUtils.setPostCommand(cmd);
+
+                                            // Ensure delay is reset when not provided
+                                            ArgumentUtils.setDelay("0s");
+
+                                            return ReconnectHandler.reconnect(Minecraft.getInstance());
+                                        })
+                                )
+
+                                // "/reconnect execute delay <time> <command>"
+                                .then(Commands.literal("delay")
+                                        .then(Commands.argument("time", StringArgumentType.word())
+                                                .then(Commands.argument("command", StringArgumentType.greedyString())
+                                                        .executes(ctx -> {
+                                                            String cmd = StringArgumentType.getString(ctx, "command");
+                                                            cmd = ArgumentUtils.cleanupCommandInput(cmd);
+
+                                                            String time = StringArgumentType.getString(ctx, "time");
+
+                                                            if (cmd == null || cmd.isEmpty()) {
+                                                                ctx.getSource().sendFailure(Component.literal("[Reconnect] Command cannot be empty."));
+                                                                return 0;
+                                                            }
+
+                                                            ArgumentUtils.setPostCommand(cmd);
+                                                            ArgumentUtils.setDelay(time);
+
+                                                            return ReconnectHandler.reconnect(Minecraft.getInstance());
+                                                        })
+                                                )
+                                        )
+                                )
+                        )
         );
     }
 }

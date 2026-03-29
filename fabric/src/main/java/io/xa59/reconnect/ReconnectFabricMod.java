@@ -1,13 +1,18 @@
 package io.xa59.reconnect;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import io.xa59.reconnect.utils.FabricStatusDisplay;
 import io.xa59.reconnect.utils.StatusDisplay;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.xa59.reconnect.utils.ArgumentUtils;
 
 public class ReconnectFabricMod implements ClientModInitializer {
 	public static final String MOD_ID = "reconnect";
@@ -24,11 +29,59 @@ public class ReconnectFabricMod implements ClientModInitializer {
 		StatusDisplay.setImplementation(new FabricStatusDisplay());
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
-			// Register the /reconnect command
 			dispatcher.register(
 					ClientCommands.literal("reconnect")
-							.executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
+							.then(ClientCommands.literal("execute")
+
+									// "/reconnect execute <command>"
+									.then(ClientCommands.argument("command", StringArgumentType.greedyString())
+											.executes(ctx -> {
+												String cmd = StringArgumentType.getString(ctx, "command");
+												cmd = ArgumentUtils.cleanupCommandInput(cmd);
+
+												if (cmd == null || cmd.isEmpty()) {
+													ctx.getSource().sendError(Component.literal("[Reconnect] Command cannot be empty."));
+													return 0;
+												}
+
+												ArgumentUtils.setPostCommand(cmd);
+
+												// Ensure delay is reset when not provided
+												ArgumentUtils.setDelay("0s");
+
+												return ReconnectHandler.reconnect(Minecraft.getInstance());
+											})
+									)
+
+									// "/reconnect execute delay <time> <command>"
+									.then(ClientCommands.literal("delay")
+											.then(ClientCommands.argument("time", StringArgumentType.word())
+													.then(ClientCommands.argument("command", StringArgumentType.greedyString())
+															.executes(ctx -> {
+																String cmd = StringArgumentType.getString(ctx, "command");
+																cmd = ArgumentUtils.cleanupCommandInput(cmd);
+
+																String time = StringArgumentType.getString(ctx, "time");
+
+																if (cmd == null || cmd.isEmpty()) {
+																	ctx.getSource().sendError(Component.literal("[Reconnect] Command cannot be empty."));
+																	return 0;
+																}
+
+																ArgumentUtils.setPostCommand(cmd);
+																ArgumentUtils.setDelay(time);
+
+																return ReconnectHandler.reconnect(Minecraft.getInstance());
+															})
+													)
+											)
+									)
+							)
 			);
+		});
+
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+			ReconnectHandler.handlePostJoin(client);
 		});
 	}
 }

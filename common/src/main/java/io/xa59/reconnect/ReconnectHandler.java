@@ -1,6 +1,7 @@
 package io.xa59.reconnect;
 
 import com.mojang.realmsclient.RealmsMainScreen;
+import io.xa59.reconnect.utils.ArgumentUtils;
 import io.xa59.reconnect.utils.RealmsStateManager;
 import io.xa59.reconnect.utils.StatusDisplay;
 import net.minecraft.ChatFormatting;
@@ -12,8 +13,6 @@ import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;
 
 public class ReconnectHandler {
-    private static boolean reconnectTriggered = false;
-
     public static int reconnect(Minecraft instance) {
         Minecraft client = Minecraft.getInstance();
         ServerData currentServer = client.getCurrentServer();
@@ -30,7 +29,7 @@ public class ReconnectHandler {
 
         // Disconnect user
         if (client.level != null) {
-            client.level.disconnect(Component.literal("[Reconnect]: User requested reconnect sequence using /reconnect."));
+            client.level.disconnect(Component.literal("[Reconnect] User requested reconnect sequence using /reconnect."));
         }
 
         Screen currentScreen = client.screen;
@@ -65,6 +64,7 @@ public class ReconnectHandler {
         });
 
         sendSuccessMessage();
+
         return 1;
     }
 
@@ -74,11 +74,25 @@ public class ReconnectHandler {
         StatusDisplay.resetOverlay();
     }
 
-    public static boolean wasTriggered() {
-        return reconnectTriggered;
-    }
+    public static void handlePostJoin(Minecraft client) {
+        String commandToRun = ArgumentUtils.getPostCommand();
+        int delayTime = ArgumentUtils.getDelaySeconds();
 
-    public static void reset() {
-        reconnectTriggered = false;
+        if (commandToRun == null) return;
+
+        // Clear shared state
+        ArgumentUtils.clear();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(delayTime * 1000L); // sleep() expects milliseconds, convert value
+            } catch (InterruptedException ignored) {}
+
+            client.execute(() -> {
+                if (client.player != null) {
+                    client.player.connection.sendCommand(commandToRun);
+                }
+            });
+        }).start();
     }
 }
