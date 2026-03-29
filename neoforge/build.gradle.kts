@@ -42,8 +42,6 @@ val mainJar = tasks.register<Jar>("mainJar") {
     filesMatching(listOf("META-INF/neoforge.mods.toml")) {
         expand(mapOf("version" to inputs.properties["version"]))
     }
-
-    archiveClassifier = "main"
 }
 
 val configurationMod: Configuration = configurations.create("main") {

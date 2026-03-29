@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PauseScreen.class)
 public abstract class PauseMenuMixin extends Screen {
+
     protected PauseMenuMixin(Component title) {
         super(title);
     }
@@ -52,10 +53,11 @@ public abstract class PauseMenuMixin extends Screen {
         this.addRenderableWidget(
                 Button.builder(
                         Component.literal("R"),
-                                _ -> ReconnectHandler.reconnect(minecraft)
+                                _ -> ReconnectHandler.reconnect()
                 )
                 .bounds(x, y, bW, bH)
                 .build()
         );
     }
+
 }

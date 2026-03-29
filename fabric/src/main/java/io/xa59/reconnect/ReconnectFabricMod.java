@@ -1,15 +1,20 @@
 package io.xa59.reconnect;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import io.xa59.reconnect.utils.FabricStatusDisplay;
 import io.xa59.reconnect.utils.StatusDisplay;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.xa59.reconnect.utils.ArgumentUtils;
+
 public class ReconnectFabricMod implements ClientModInitializer {
+
 	public static final String MOD_ID = "reconnect";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -23,12 +28,66 @@ public class ReconnectFabricMod implements ClientModInitializer {
 
 		StatusDisplay.setImplementation(new FabricStatusDisplay());
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
-			// Register the /reconnect command
-			dispatcher.register(
-					ClientCommands.literal("reconnect")
-							.executes(_ -> ReconnectHandler.reconnect(Minecraft.getInstance()))
-			);
-		});
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
+                ClientCommands.literal("reconnect")
+                        .executes(_ -> ReconnectHandler.reconnect())
+
+                        .then(ClientCommands.literal("execute")
+
+                                // "/reconnect execute <command>"
+                                .then(ClientCommands.argument("command", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            String cmd = StringArgumentType.getString(ctx, "command");
+                                            cmd = ArgumentUtils.cleanupCommandInput(cmd);
+
+                                            String[] parts = cmd.trim().split("\\s+");
+
+                                            if (parts.length > 0 && parts[0].equalsIgnoreCase("reconnect")) {
+                                                ctx.getSource().sendError(Component.literal("<59xa> bro, don't even try recursing /reconnect lmfao"));
+                                                return 0;
+                                            }
+
+                                            if (cmd.isEmpty()) {
+                                                ctx.getSource().sendError(Component.literal("[Reconnect] Command cannot be empty."));
+                                                return 0;
+                                            }
+
+                                            ArgumentUtils.setPostCommand(cmd);
+
+                                            // Ensure delay is reset when not provided
+                                            ArgumentUtils.setDelay("0s");
+
+                                            return ReconnectHandler.reconnect();
+                                        })
+                                )
+
+                                // "/reconnect execute delay <time> <command>"
+                                .then(ClientCommands.literal("delay")
+                                        .then(ClientCommands.argument("time", StringArgumentType.word())
+                                                .then(ClientCommands.argument("command", StringArgumentType.greedyString())
+                                                        .executes(ctx -> {
+                                                            String cmd = StringArgumentType.getString(ctx, "command");
+                                                            cmd = ArgumentUtils.cleanupCommandInput(cmd);
+
+                                                            String time = StringArgumentType.getString(ctx, "time");
+
+                                                            if (cmd == null || cmd.isEmpty()) {
+                                                                ctx.getSource().sendError(Component.literal("[Reconnect] Command cannot be empty."));
+                                                                return 0;
+                                                            }
+
+                                                            ArgumentUtils.setPostCommand(cmd);
+                                                            ArgumentUtils.setDelay(time);
+
+                                                            return ReconnectHandler.reconnect();
+                                                        })
+                                                )
+                                        )
+                                )
+                        )
+        ));
+
+		ClientPlayConnectionEvents.JOIN.register((_, _, client) -> ReconnectHandler.handlePostJoin(client));
 	}
+
 }

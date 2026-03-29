@@ -3,6 +3,7 @@ package io.xa59.reconnect.utils;
 import net.minecraft.ChatFormatting;
 
 public class StatusDisplay {
+
     private static IStatusDisplay impl;
 
     public static void setImplementation(IStatusDisplay implementation) {
@@ -20,4 +21,5 @@ public class StatusDisplay {
             impl.resetOverlay();
         }
     }
+
 }

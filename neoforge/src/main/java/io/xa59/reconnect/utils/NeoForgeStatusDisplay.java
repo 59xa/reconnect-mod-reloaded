@@ -11,6 +11,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = "reconnect")
 public class NeoForgeStatusDisplay implements IStatusDisplay {
+
     private boolean showOverlay = false;
 
     @Override
@@ -32,4 +33,5 @@ public class NeoForgeStatusDisplay implements IStatusDisplay {
     public void resetOverlay() {
         showOverlay = false;
     }
+
 }
