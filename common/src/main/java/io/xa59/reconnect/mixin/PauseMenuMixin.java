@@ -53,7 +53,7 @@ public abstract class PauseMenuMixin extends Screen {
         this.addRenderableWidget(
                 Button.builder(
                         Component.literal("R"),
-                                _ -> ReconnectHandler.reconnect()
+                                context -> ReconnectHandler.reconnect()
                 )
                 .bounds(x, y, bW, bH)
                 .build()

@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[${forge_loader_version},)"
+license = "MIT"
+
+[[mods]]
+modId = "reconnect"
+version = "${version}"
+displayName = "Reconnect"
+logoFile = "icon.png"
+authors = "xa59"
+description = '''
+A simple mod that reconnects the user inside a multiplayer world without leaving.
+'''
+displayTest = "IGNORE_ALL_VERSION"
+
+[[dependencies.reconnect]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version}]"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.reconnect]]
+modId = "forge"
+mandatory = true
+versionRange = "[${forge_version},)"
+ordering = "NONE"
+side = "CLIENT"
