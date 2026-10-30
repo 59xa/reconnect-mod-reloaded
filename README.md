@@ -74,5 +74,7 @@ The active IDE version defaults to 26.3. Change it with `./gradlew "Set active p
 ## Credits
 - HiWord9's implementation ([link](https://github.com/HiWord9/Reconnect-Button-HiWord9-fabric-1.19))
 - Fabric ([link](https://fabricmc.net/))
+- Forge ([link](https://files.minecraftforge.net))
 - NeoForge ([link](https://neoforged.net/))
+- Stonecutter by KikuGie ([link](https://stonecutter.kikugie.dev)) - for making backporting possible and efficient
 - You (for giving this mod a try! 🤍)
