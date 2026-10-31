@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[4,)"
+loaderVersion = "[${neoforge_loader_version},)"
 license = "MIT"
 
 [[mods]]
@@ -18,3 +18,15 @@ A simple mod that reconnects the user inside a multiplayer world without leaving
 
 [[mixins]]
 config = "reconnect.mixins.json"
+
+[[dependencies.reconnect]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version}]"
+side = "CLIENT"
+
+[[dependencies.reconnect]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+side = "CLIENT"

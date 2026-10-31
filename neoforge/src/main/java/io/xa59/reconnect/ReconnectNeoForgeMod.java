@@ -1,114 +1,44 @@
 package io.xa59.reconnect;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import io.xa59.reconnect.utils.ArgumentUtils;
-import io.xa59.reconnect.utils.NeoForgeStatusDisplay;
-import io.xa59.reconnect.utils.StatusDisplay;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.lifecycle.ClientStartedEvent;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
+import io.xa59.reconnect.utils.JoinStatusDisplay;
+import io.xa59.reconnect.utils.StatusDisplay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.commands.Commands;
-import net.neoforged.api.distmarker.Dist;
+import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.fml.common.Mod;
+import io.xa59.reconnect.utils.NeoForgeEnvironment;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-@Mod(value = "reconnect", dist = Dist.CLIENT)
-public class ReconnectNeoForgeMod {
-
-    public static final Logger LOGGER = LogUtils.getLogger();
-
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-
-    @SubscribeEvent
-    public void onClientStarting(ClientStartedEvent event) {
-        LOGGER.info(ANSI_GREEN + "Reconnect" + ANSI_YELLOW + ": successfully initialised on NeoForge." + ANSI_RESET);
-
-        StatusDisplay.setImplementation(new NeoForgeStatusDisplay());
-    }
-
-    @SubscribeEvent
-    public void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
-        Minecraft client = Minecraft.getInstance();
-
-        client.execute(() -> ReconnectHandler.handlePostJoin(client));
-    }
-
+@Mod("reconnect")
+public final class ReconnectNeoForgeMod {
     public ReconnectNeoForgeMod() {
-        NeoForge.EVENT_BUS.register(this);
-        NeoForge.EVENT_BUS.addListener(this::registerCommands);
-        NeoForge.EVENT_BUS.addListener(this::onJoin);
+        if (NeoForgeEnvironment.isClient()) {
+            Client.initialise();
+        }
     }
 
-    private void registerCommands(RegisterClientCommandsEvent event) {
-        // Register the /reconnect command
-        event.getDispatcher().register(
-                Commands.literal("reconnect")
-                        .executes(_ -> ReconnectHandler.reconnect())
+    private static final class Client {
+        private static final JoinStatusDisplay DISPLAY = new JoinStatusDisplay();
 
-                        .then(Commands.literal("execute")
-
-                                // "/reconnect execute <command>"
-                                .then(Commands.argument("command", StringArgumentType.greedyString())
-                                        .executes(ctx -> {
-                                            String cmd = StringArgumentType.getString(ctx, "command");
-                                            cmd = ArgumentUtils.cleanupCommandInput(cmd);
-
-                                            if (sanitiseCommandPayload(ctx, cmd)) return 0;
-
-                                            // Ensure delay is reset when not provided
-                                            ArgumentUtils.setDelay("0s");
-
-                                            return ReconnectHandler.reconnect();
-                                        })
-                                )
-
-                                // "/reconnect execute delay <time> <command>"
-                                .then(Commands.literal("delay")
-                                        .then(Commands.argument("time", StringArgumentType.word())
-                                                .then(Commands.argument("command", StringArgumentType.greedyString())
-                                                        .executes(ctx -> {
-                                                            String cmd = StringArgumentType.getString(ctx, "command");
-                                                            cmd = ArgumentUtils.cleanupCommandInput(cmd);
-
-                                                            String time = StringArgumentType.getString(ctx, "time");
-
-                                                            if (sanitiseCommandPayload(ctx, cmd)) return 0;
-                                                            ArgumentUtils.setDelay(time);
-
-                                                            return ReconnectHandler.reconnect();
-                                                        })
-                                                )
-                                        )
-                                )
-                        )
-        );
-    }
-
-    private boolean sanitiseCommandPayload(CommandContext<CommandSourceStack> ctx, String cmd) {
-        if (cmd.isEmpty()) {
-            ctx.getSource().sendFailure(Component.literal("[Reconnect] Command cannot be empty."));
-            return true;
+        private static void initialise() {
+            LogUtils.getLogger().info("Reconnect: successfully initialised on NeoForge.");
+            StatusDisplay.setImplementation(DISPLAY);
+            NeoForge.EVENT_BUS.addListener(Client::registerCommands);
+            NeoForge.EVENT_BUS.addListener(Client::onJoin);
         }
 
-        String[] parts = cmd.trim().split("\\s+");
-
-        if (parts.length > 0 && parts[0].equalsIgnoreCase("reconnect")) {
-            ctx.getSource().sendFailure(Component.literal("<59xa> bro, don't even try recursing /reconnect lmfao"));
-            return true;
+        private static void registerCommands(RegisterClientCommandsEvent event) {
+            event.getDispatcher().register(ReconnectCommands.create(CommandSourceStack::sendFailure));
         }
 
-        ArgumentUtils.setPostCommand(cmd);
-        return false;
+        private static void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+            Minecraft client = Minecraft.getInstance();
+            client.execute(() -> {
+                ReconnectHandler.handlePostJoin(client);
+                DISPLAY.onJoin(client);
+            });
+        }
     }
-
 }

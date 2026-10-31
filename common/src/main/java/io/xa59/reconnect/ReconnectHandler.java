@@ -1,12 +1,11 @@
 package io.xa59.reconnect;
 
-import com.mojang.realmsclient.RealmsMainScreen;
 import io.xa59.reconnect.utils.ArgumentUtils;
+import io.xa59.reconnect.utils.ClientCompatibility;
 import io.xa59.reconnect.utils.RealmsStateManager;
 import io.xa59.reconnect.utils.StatusDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
@@ -23,7 +22,7 @@ public class ReconnectHandler {
 
         if (currentServer == null) {
             if (client.player != null) {
-                client.player.sendOverlayMessage(
+                ClientCompatibility.showOverlay(client.player,
                         Component.literal("You are currently not connected to a multiplayer server.")
                                 .withStyle(ChatFormatting.RED)
                 );
@@ -33,20 +32,21 @@ public class ReconnectHandler {
 
         // Mark that an intentional reconnect sequence has started
         isReconnecting = true;
+        boolean onRealm = ClientCompatibility.isRealm(client, currentServer);
 
         // Disconnect user
         if (client.level != null) {
-            client.level.disconnect(Component.literal("[Reconnect] User requested reconnect sequence using /reconnect."));
+            ClientCompatibility.disconnectLevel(client, Component.literal("[Reconnect] User requested reconnect sequence using /reconnect."));
         }
 
-        Screen currentScreen = client.screen;
+        Screen currentScreen = ClientCompatibility.currentScreen(client);
         assert currentScreen != null;
-        client.disconnect(currentScreen, false);
+        ClientCompatibility.disconnectClient(client, currentScreen);
 
         // If on Realms, handle connection through here instead
-        if (currentServer.isRealm()) {
+        if (onRealm) {
             if (RealmsStateManager.currentRealm != null) {
-                client.execute(() -> RealmsMainScreen.play(RealmsStateManager.currentRealm, currentScreen));
+                client.execute(() -> ClientCompatibility.playRealm(RealmsStateManager.currentRealm, currentScreen));
 
                 if (ArgumentUtils.getPostCommand() == null) sendSuccessMessage();
 
@@ -54,7 +54,7 @@ public class ReconnectHandler {
             } else {
                 isReconnecting = false; // Abort reconnect state if fetching fails
                 if (client.player != null) {
-                    client.player.sendOverlayMessage(
+                    ClientCompatibility.showOverlay(client.player,
                             Component.literal("Failed to fetch Realm data for reconnect.")
                                     .withStyle(ChatFormatting.RED)
                     );
@@ -66,7 +66,7 @@ public class ReconnectHandler {
         // Parse current server address
         ServerAddress serverAddress = ServerAddress.parseString(currentServer.ip);
 
-        client.execute(() -> ConnectScreen.startConnecting(currentScreen, client, serverAddress, currentServer, true, null));
+        client.execute(() -> ClientCompatibility.connect(client, currentScreen, serverAddress, currentServer));
 
         if (ArgumentUtils.getPostCommand() == null) sendSuccessMessage();
 
@@ -80,6 +80,7 @@ public class ReconnectHandler {
     }
 
     public static void handlePostJoin(Minecraft client) {
+        AutoReconnectHandler.connected(client);
         // Abort if not triggered by command, or if it already ran
         if (!isReconnecting) {
             return;
@@ -104,7 +105,7 @@ public class ReconnectHandler {
 
         // If command exists with delay, display intent overlay message
         if (delayTime != 0) {
-            client.player.sendOverlayMessage(
+            ClientCompatibility.showOverlay(client.player,
                     Component.literal("Successfully reconnected. Running command payload after " + delayTime + " seconds.")
                             .withStyle(ChatFormatting.YELLOW)
             );
@@ -119,7 +120,7 @@ public class ReconnectHandler {
                 if (client.player != null) {
                     client.player.connection.sendCommand(commandToRun);
 
-                    client.player.sendOverlayMessage(
+                    ClientCompatibility.showOverlay(client.player,
                             Component.literal("Command execution complete.")
                                     .withStyle(ChatFormatting.GREEN)
                     );

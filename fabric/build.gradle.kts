@@ -1,53 +1,49 @@
 plugins {
     id("multiloader-platform")
-
-    id("net.fabricmc.fabric-loom") version ("1.15.5")
+    id("net.fabricmc.fabric-loom") version "1.17.21"
 }
 
-base {
-    archivesName = "reconnect-fabric"
-}
+val target = BuildConf(project)
+val commonProject = ":common:${target.minecraftVersion}"
 
-val configurationCommonModJava: Configuration = configurations.create("commonJava") {
+base.archivesName = "reconnect-fabric"
+
+val commonJava = configurations.create("commonJava") {
     isCanBeResolved = true
+    isCanBeConsumed = false
+}
+val commonResources = configurations.create("commonResources") {
+    isCanBeResolved = true
+    isCanBeConsumed = false
 }
 
 dependencies {
-    implementation(project(":common"))
-    configurationCommonModJava(project(path = ":common", configuration = "commonMainJava"))
-}
+    minecraft("com.mojang:minecraft:${target.minecraftVersion}")
+    implementation("net.fabricmc:fabric-loader:${target.fabricLoaderVersion}")
+    commonJava(project(path = commonProject, configuration = "commonJava"))
+    commonResources(project(path = commonProject, configuration = "commonResources"))
 
-sourceSets["main"].compileClasspath += project(":common").sourceSets["main"].output
-sourceSets["main"].runtimeClasspath += project(":common").sourceSets["main"].output
-
-sourceSets.apply {
-    main {
-        compileClasspath += configurationCommonModJava
-    }
-}
-
-dependencies {
-    minecraft("com.mojang:minecraft:${BuildConf.MINECRAFT_VERSION}")
-
-    implementation("net.fabricmc:fabric-loader:${BuildConf.FABRIC_LOADER_VERSION}")
-
-    fun addEmbeddedFabricModule(name: String) {
-        val module = fabricApi.module(name, BuildConf.FABRIC_API_VERSION)
+    listOf("fabric-api-base", "fabric-networking-api-v1", "fabric-command-api-v2").forEach {
+        val module = fabricApi.module(it, target.fabricApiVersion)
         implementation(module)
         include(module)
     }
-
-    addEmbeddedFabricModule("fabric-api-base")
-    addEmbeddedFabricModule("fabric-networking-api-v1")
-    addEmbeddedFabricModule("fabric-command-api-v2")
 }
 
-tasks.named<Jar>("jar") {
-    from(project(":common").sourceSets["main"].output)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+sourceSets.main {
+    compileClasspath += commonJava
+    runtimeClasspath += commonJava
 }
 
-tasks.named<ProcessResources>("processResources") {
-    from(project(":common").sourceSets["main"].resources.srcDirs)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+tasks.jar { from(commonJava) }
+tasks.processResources { from(commonResources) }
+
+loom {
+    mods {
+        register("reconnect") {
+            sourceSet(sourceSets.main.get())
+            configuration(commonJava)
+            configuration(commonResources)
+        }
+    }
 }
